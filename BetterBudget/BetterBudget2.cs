@@ -8,13 +8,13 @@ using ColossalFramework.UI;
 using UnityEngine;
 using System.Reflection;
 
-
 namespace BetterBudget
 {
-    class BetterBudget2 : UIPanel {
-
+    internal class BetterBudget2 : UIPanel
+    {
         // path of save files
         private static string filePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + "BetterBudgetMod";
+
         private static string fileNameSettings = Path.DirectorySeparatorChar + "BetterBudgetSettings6.xml";
 
         // UIView (main container for UI stuff)
@@ -25,6 +25,7 @@ namespace BetterBudget
 
         // required to open and close budget/expense panel to update our custom sliders every now and then
         private bool _budgetWindowManipulated = false;
+
         private bool _expenseUpdateActive = true;
         private int _expenseUpdateTimer = 1;
         private int _expenseUpdateTimerCounter = 0;
@@ -46,6 +47,10 @@ namespace BetterBudget
 
         public override void Start()
         {
+            // open budget panel once to load panel
+            ToolsModifierControl.mainToolbar.ShowEconomyPanel(1);
+            ToolsModifierControl.mainToolbar.CloseEverything();
+
             //base.Start();
 
             // load UI and attach the BetterBudget object to its origin (top left)
@@ -77,7 +82,6 @@ namespace BetterBudget
             {
                 foreach (UIComponent sliderPanel in servicesContainer.components)
                 {
-
                     if (sliderPanel.GetComponents<BudgetItem>().Length == 0) { continue; }
 
                     UISprite originalSprite = sliderPanel.Find<UISprite>("Icon");
@@ -89,7 +93,6 @@ namespace BetterBudget
                     else
                         spriteName = originalSprite.spriteName;
 
-                    
                     // Add value changed event to update all other panels
                     UISlider sliderDay = sliderPanel.Find<UISlider>("DaySlider");
                     UISlider sliderNight = sliderPanel.Find<UISlider>("NightSlider");
@@ -98,7 +101,6 @@ namespace BetterBudget
 
                     // Add event that unlocks the components
                     sliderPanel.eventIsEnabledChanged += hitMilestone;
-
 
                     // save service names and sprites as well as the budget panels (to later remove the milestone event)
                     _spriteDictionary.Add(sliderPanel.name, spriteName);
@@ -111,11 +113,10 @@ namespace BetterBudget
                     }
                     _allBudgetPanels[sliderPanel.name].Add((UIPanel)sliderPanel);
 
-
                     // Add to original BudgetItem list to create copies of them
                     BudgetItem budgetItem = sliderPanel.GetComponents<BudgetItem>()[0];
                     _budgetItems.Add(sliderPanel.name, budgetItem);
-                    
+
                     // Copy data binding values from BudgetItem (to be later used to initialize the copies)
                     BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
                     ItemClass.Service service = (ItemClass.Service)(budgetItem.GetType().GetField("m_Service", bindFlags).GetValue(budgetItem));
@@ -123,7 +124,6 @@ namespace BetterBudget
                     Int32 budgetExpensePollIndex = (Int32)(budgetItem.GetType().GetField("m_BudgetExpensePollIndex", bindFlags).GetValue(budgetItem));
                     //Debug.Log(sliderPanel.name + " " + service + " " + subService + " " + budgetExpensePollIndex);
                     _serviceInfos.Add(sliderPanel.name, new ServiceInfo(sliderPanel.name, service, subService, budgetExpensePollIndex));
-
                 }
             }
 
@@ -131,7 +131,7 @@ namespace BetterBudget
             List<UIPanel> infoViewPanelList = new List<UIPanel>();
             _embeddedBudgetPanelList = new List<UIEmbeddedBudgetPanel>();
 
-            foreach (UIPanel panel in view.GetComponentsInChildren<UIPanel>())  
+            foreach (UIPanel panel in view.GetComponentsInChildren<UIPanel>())
             {
                 if (panel.name.Contains("(Library)") && panel.name.Contains("InfoViewPanel"))
                 {
@@ -140,7 +140,8 @@ namespace BetterBudget
             }
 
             // create mod panels and add them to the service info view panels
-            foreach (UIPanel infoViewPanel in infoViewPanelList) {
+            foreach (UIPanel infoViewPanel in infoViewPanelList)
+            {
                 UIEmbeddedBudgetPanel embeddedPanel = infoViewPanel.AddUIComponent<UIEmbeddedBudgetPanel>();
                 embeddedPanel.initialize(this, infoViewPanel);
                 _embeddedBudgetPanelList.Add(embeddedPanel);
@@ -151,14 +152,16 @@ namespace BetterBudget
             if (settings.embeddedPanelSettings.Count > 0)
             {
                 Dictionary<String, List<String>> map = new Dictionary<String, List<String>>();
-                foreach(BBEmbeddedSaveFile savefile in settings.embeddedPanelSettings) {
+                foreach (BBEmbeddedSaveFile savefile in settings.embeddedPanelSettings)
+                {
                     map.Add(savefile.infoViewPanelName, savefile.budgetSliderNameList);
                 }
 
                 foreach (UIEmbeddedBudgetPanel panel in _embeddedBudgetPanelList)
                 {
                     String panelName = panel.getInfoViewPanel().name;
-                    if (map.ContainsKey(panelName)) {
+                    if (map.ContainsKey(panelName))
+                    {
                         if (map[panelName].Count > 0)
                         {
                             panel.setSliderPanel(map[panelName].ToArray());
@@ -178,10 +181,7 @@ namespace BetterBudget
                     panel.initialize(this, savefile);
                 }
             }
-
         }
-
-
 
         private void hitMilestone(UIComponent component, bool value)
         {
@@ -189,8 +189,9 @@ namespace BetterBudget
             {
                 return;
             }
-            
-            foreach (UIPanel panel in _allBudgetPanels[component.name]) {
+
+            foreach (UIPanel panel in _allBudgetPanels[component.name])
+            {
                 panel.isEnabled = value;
                 UISprite icon = panel.Find<UISprite>("Icon");
                 if (value)
@@ -210,8 +211,6 @@ namespace BetterBudget
             }
         }
 
-
-
         private void copySliderValuesDay(UIComponent slider, float value)
         {
             if (this.isCurrentlyChangingValues)
@@ -220,7 +219,7 @@ namespace BetterBudget
             }
             this.isCurrentlyChangingValues = true;
             foreach (UIPanel sliderPanel in _allBudgetPanels[slider.parent.name])
-            {   
+            {
                 if (sliderPanel.GetInstanceID() == slider.GetInstanceID())
                 {
                     continue; // skip itself
@@ -231,8 +230,6 @@ namespace BetterBudget
             }
             this.isCurrentlyChangingValues = false;
         }
-
-
 
         private void copySliderValuesNight(UIComponent slider, float value)
         {
@@ -254,11 +251,11 @@ namespace BetterBudget
             this.isCurrentlyChangingValues = false;
         }
 
-
         public List<BudgetItem> getBudgetCopies(String[] names)
         {
             List<BudgetItem> budgetItems = new List<BudgetItem>();
-            foreach (String name in names) {
+            foreach (String name in names)
+            {
                 BudgetItem budgetCopy = getBudgetCopy(name);
                 if (budgetCopy != null)
                 {
@@ -308,8 +305,6 @@ namespace BetterBudget
             sliderNight.eventValueChanged -= copySliderValuesNight;
         }
 
-
-
         public override void Update()
         {
             // update every 60 seconds
@@ -318,10 +313,13 @@ namespace BetterBudget
             if (_budgetWindowManipulated)
             {
                 _expensePanel.isVisible = false;
-                if (_expenseUpdateTimerCounter > 0) {
+                if (_expenseUpdateTimerCounter > 0)
+                {
                     _expenseUpdateTimer = 240;
                     _expenseUpdateTimerCounter -= 1;
-                } else {
+                }
+                else
+                {
                     _expenseUpdateTimer = 1800;
                 }
                 _budgetWindowManipulated = false;
@@ -344,15 +342,14 @@ namespace BetterBudget
             base.Update();
         }
 
-
-
         public void unload()
         {
             saveSettings();
 
-
-            foreach (KeyValuePair<String, List<UIPanel>> entry in _allBudgetPanels) {
-                foreach (UIPanel panel in entry.Value) {
+            foreach (KeyValuePair<String, List<UIPanel>> entry in _allBudgetPanels)
+            {
+                foreach (UIPanel panel in entry.Value)
+                {
                     UISlider sliderDay = panel.Find<UISlider>("DaySlider");
                     UISlider sliderNight = panel.Find<UISlider>("NightSlider");
 
@@ -371,15 +368,13 @@ namespace BetterBudget
             foreach (UIEmbeddedBudgetPanel panel in _embeddedBudgetPanelList)
             {
                 GameObject.Destroy(panel.gameObject);
-            } 
-            
+            }
+
             foreach (UICustomBudgetPanel panel in _customBudgetPanelList)
             {
                 GameObject.Destroy(panel.gameObject);
             }
         }
-
-
 
         /// <summary>
         /// Saves playermade changes and settings.
@@ -403,7 +398,6 @@ namespace BetterBudget
                 settings.customPanelSettings.Add(savefile);
             }
 
-
             TextWriter writer = null;
             try
             {
@@ -417,8 +411,6 @@ namespace BetterBudget
                     writer.Close();
             }
         }
-
-
 
         /// <summary>
         /// Loads last session's playermade changes and settings.
@@ -446,62 +438,60 @@ namespace BetterBudget
             return settings;
         }
 
-
-
         private void createSaveFile()
         {
             System.IO.Directory.CreateDirectory(filePath); // create folder
 
             BBSettings settings = new BBSettings();
             settings.expanseUpdateActive = true;
-            
+
             List<String> infoViewPanelNameList = new List<string>();
             List<String[]> budgetSliderNameList = new List<String[]>();
 
             infoViewPanelNameList.Add("(Library) HealthInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"Healthcare"});
+            budgetSliderNameList.Add(new String[] { "Healthcare" });
             infoViewPanelNameList.Add("(Library) OutsideConnectionsInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) CrimeInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"Police"});
+            budgetSliderNameList.Add(new String[] { "Police" });
             infoViewPanelNameList.Add("(Library) PopulationInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) PollutionInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) NoisePollutionInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) WindInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) LevelsInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) TrafficInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) LandValueInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) NaturalResourcesInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) PublicTransportInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"Bus", "Metro", "Train", "Ship", "Plane", "Taxi", "Tram", "Monorail", "CableCar", "Tours"});
+            budgetSliderNameList.Add(new String[] { "Bus", "Metro", "Train", "Ship", "Plane", "Taxi", "Tram", "Monorail", "CableCar", "Tours" });
             infoViewPanelNameList.Add("(Library) ElectricityInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"Electricity"});
+            budgetSliderNameList.Add(new String[] { "Electricity" });
             infoViewPanelNameList.Add("(Library) HappinessInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {});
+            budgetSliderNameList.Add(new String[] { });
             infoViewPanelNameList.Add("(Library) EducationInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"Education"});
+            budgetSliderNameList.Add(new String[] { "Education" });
             infoViewPanelNameList.Add("(Library) WaterInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"WaterAndSewage"});
+            budgetSliderNameList.Add(new String[] { "WaterAndSewage" });
             infoViewPanelNameList.Add("(Library) HeatingInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"Electricity"});
+            budgetSliderNameList.Add(new String[] { "Electricity" });
             infoViewPanelNameList.Add("(Library) GarbageInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"Garbage"});
+            budgetSliderNameList.Add(new String[] { "Garbage" });
             infoViewPanelNameList.Add("(Library) FireSafetyInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"FireDepartment"});
+            budgetSliderNameList.Add(new String[] { "FireDepartment" });
             infoViewPanelNameList.Add("(Library) EntertainmentInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"Beautification", "Monuments"});
+            budgetSliderNameList.Add(new String[] { "Beautification", "Monuments" });
             infoViewPanelNameList.Add("(Library) RoadMaintenanceInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"RoadMaintenance"});
+            budgetSliderNameList.Add(new String[] { "RoadMaintenance" });
             infoViewPanelNameList.Add("(Library) RoadSnowInfoViewPanel");
-            budgetSliderNameList.Add(new String[] {"RoadMaintenance"});
+            budgetSliderNameList.Add(new String[] { "RoadMaintenance" });
 
             for (int i = 0; i < infoViewPanelNameList.Count; i++)
             {
@@ -549,9 +539,6 @@ namespace BetterBudget
             }
         }
     }
-
-
-
 
     public enum Mode
     {
