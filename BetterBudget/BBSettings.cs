@@ -21,6 +21,7 @@ namespace BetterBudget
             customPanelSettings = new List<BBCustomSaveFile>();
             expanseUpdateActive = true;
         }
+
         /*
         public List<BBPanelSettings> panelSettings = new List<BBPanelSettings>();
         public bool expenseUpdateActive = true;

@@ -8,7 +8,10 @@ namespace BetterBudget
 {
     public class BBModInformation : IUserMod
     {
-        public string Name { get { return "Better Budget"; } }
-        public string Description { get { return "Faster access to the budget service sliders\nby unobtanium"; } }
+        public string Name
+        { get { return "Better Budget (FIX)"; } }
+
+        public string Description
+        { get { return "Faster access to the budget service sliders"; } }
     }
 }

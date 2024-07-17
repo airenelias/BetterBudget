@@ -10,9 +10,8 @@ using UnityEngine;
 
 namespace BetterBudget
 {
-    class UICustomBudgetPanelSelector : UIPanel
+    internal class UICustomBudgetPanelSelector : UIPanel
     {
-
         private BetterBudget2 _main;
         private UIPanel _containerSelected;
         private UIPanel _containerUnselected;
@@ -21,20 +20,19 @@ namespace BetterBudget
         private UIButton _quitButton;
         private UICustomBudgetPanel _panel;
 
-
         public void initialize(BetterBudget2 main, UICustomBudgetPanel panel, List<UIPanel> sliderList)
         {
             this._main = main;
             this._panel = panel;
             this.transform.parent = panel.transform;
             relativePosition = new Vector3(panel.width, 0);
-            int containerHeight = (int) Math.Ceiling(_main._spriteDictionary.Count / 4.0) * 35 + 5;
+            int containerHeight = (int)Math.Ceiling(_main._spriteDictionary.Count / 4.0) * 35 + 5;
             size = new Vector2(400, 135 + containerHeight);
             canFocus = true;
             isInteractive = true;
             isVisible = true;
             backgroundSprite = "MenuPanel2";
-            color = new Color32(255,255,255,255);
+            color = new Color32(255, 255, 255, 255);
 
             UILabel label = AddUIComponent<UILabel>();
             label.text = "Custom Budget Editor";
@@ -49,7 +47,6 @@ namespace BetterBudget
             _icon.name = "Icon";
             _icon.size = new Vector2(40, 40);
 
-
             // Drag Handler
             UIDragHandle draghandler = AddUIComponent<UIDragHandle>();
             draghandler.relativePosition = new Vector3(0, 0);
@@ -57,7 +54,6 @@ namespace BetterBudget
             draghandler.target = this;
             draghandler.name = "Drag Handler";
             draghandler.size = new Vector2(this.width, 41);
-
 
             // Quit Button
             _quitButton = AddUIComponent<UIButton>();

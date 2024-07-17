@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace BetterBudget
 {
-    class ServiceInfo
+    internal class ServiceInfo
     {
         public String serviceName;
         public ItemClass.Service service;
@@ -29,6 +29,5 @@ namespace BetterBudget
         {
             budgetItem.Init(service, subService, budgetExpensePollIndex);
         }
-
     }
 }

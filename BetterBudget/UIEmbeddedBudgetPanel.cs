@@ -5,12 +5,10 @@ using ICities;
 using ColossalFramework.UI;
 using UnityEngine;
 
-
 namespace BetterBudget
 {
-    class UIEmbeddedBudgetPanel : UIPanel
+    internal class UIEmbeddedBudgetPanel : UIPanel
     {
-
         private BetterBudget2 _main;
         private UIPanel _infoViewPanel;
 
@@ -22,8 +20,6 @@ namespace BetterBudget
         private bool isEditEnabled;
 
         private bool isPublicTransportInfoViewPanelAndDidNotApplyFix;
-
-
 
         public void initialize(BetterBudget2 main, UIPanel infoViewPanel)
         {
@@ -55,8 +51,6 @@ namespace BetterBudget
             icon.BringToFront();
         }
 
-
-
         private void openSelectorPanel(UIComponent component, UIMouseEventParameter eventParam)
         {
             if (isEditEnabled)
@@ -65,7 +59,6 @@ namespace BetterBudget
                 isEditEnabled = false;
             }
         }
-
 
         public void setSliderPanel(String[] sliderPanels)
         {
@@ -84,7 +77,7 @@ namespace BetterBudget
 
             foreach (BudgetItem budgetItem in budgetItems)
             {
-                UIPanel panel = (UIPanel) budgetItem.component;
+                UIPanel panel = (UIPanel)budgetItem.component;
                 AttachUIComponent(budgetItem.gameObject);
 
                 UIComponent sliderDay = panel.Find<UISlider>("DaySlider");
@@ -127,8 +120,6 @@ namespace BetterBudget
             }
         }
 
-
-
         private void clearSliderPanel()
         {
             if (_sliderList.Count == 0)
@@ -154,8 +145,6 @@ namespace BetterBudget
             _sliderIsOpen.Clear();
         }
 
-
-
         private void onPanelEnter(UIPanel panel)
         {
             UILabel total = panel.Find<UILabel>("Total");
@@ -166,8 +155,6 @@ namespace BetterBudget
             percentageDay.isVisible = true;
             percentageNight.isVisible = true;
         }
-
-
 
         private void onPanelLeave(UIPanel panel)
         {
@@ -182,9 +169,8 @@ namespace BetterBudget
             percentageNight.isVisible = false;
         }
 
-
-
-        private void changeInfoViewPanelHeight(float newHeight) {
+        private void changeInfoViewPanelHeight(float newHeight)
+        {
             if (newHeight == 0)
                 return;
 
@@ -209,8 +195,6 @@ namespace BetterBudget
                 list[i].size = new Vector2(Width[i], Height[i]);
             }
         }
-
-
 
         public override void Update()
         {
@@ -251,48 +235,38 @@ namespace BetterBudget
             {
                 if (panel.containsMouse)
                 {
-
                     if (_sliderIsOpen[i] == false)
                     {
                         onPanelEnter(panel);
                         _sliderIsOpen[i] = true;
                     }
-
                 }
                 else
                 {
-
                     if (_sliderIsOpen[i] == true)
                     {
                         onPanelLeave(panel);
                         _sliderIsOpen[i] = false;
                     }
-
                 }
 
                 i++;
             }
         }
 
-
-
         public void enableEditButton()
         {
             isEditEnabled = true;
         }
 
-
-        
         public BBEmbeddedSaveFile getSettings()
         {
             UISprite icon = _infoViewPanel.Find("Caption").Find<UISprite>("Icon");
             icon.eventClick -= openSelectorPanel;
-            if (_sliderList.Count > 0 )
+            if (_sliderList.Count > 0)
                 changeInfoViewPanelHeight(_infoViewPanel.height - _sliderList.Count * 50 - 10);
             return settings;
         }
-
-
 
         public UIPanel getInfoViewPanel()
         {

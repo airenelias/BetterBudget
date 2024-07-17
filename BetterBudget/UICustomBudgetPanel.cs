@@ -4,25 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 using ICities;
 using ColossalFramework.UI;
 using UnityEngine;
 
 namespace BetterBudget
 {
-    class UICustomBudgetPanel : UIPanel
+    internal class UICustomBudgetPanel : UIPanel
     {
-        BetterBudget2 _main;
+        private BetterBudget2 _main;
 
         private Boolean isEditEnabled;
         private Mode mode;
         public BBCustomSaveFile settings;
 
-        UISprite icon;
-        UIDragHandle draghandler;
-        UILabel title;
-        UIButton quitButton;
+        private UISprite icon;
+        private UIDragHandle draghandler;
+        private UILabel title;
+        private UIButton quitButton;
         //UIResizeHandle resizehandler;
 
         private List<UIPanel> _sliderList;
@@ -49,7 +48,6 @@ namespace BetterBudget
             title.text = "Custom Budget Panel";
             title.relativePosition = new Vector3((width / 2) - ((title.text.Length / 2) * 8), 12);
             title.name = "Title";
-
 
             // Drag Handler
             draghandler = AddUIComponent<UIDragHandle>();
@@ -96,8 +94,6 @@ namespace BetterBudget
             this.settings = settings; // ensures that settings are saved across sessions even if some expansions and their budgets may be disabled
         }
 
-
-
         private void deleteCustomPanel(UIComponent component, UIMouseEventParameter eventParam)
         {
             _main.removeCustomPanel(this);
@@ -110,8 +106,6 @@ namespace BetterBudget
             GameObject.Destroy(this.gameObject);
         }
 
-
-
         private void openSelectorPanel(UIComponent component, UIMouseEventParameter eventParam)
         {
             if (isEditEnabled)
@@ -121,23 +115,18 @@ namespace BetterBudget
             }
         }
 
-
-
         public void enableEditButton()
         {
             isEditEnabled = true;
         }
-
-
 
         private void toggleMode(UIComponent component, UIMouseEventParameter eventParam)
         {
             toggleMode();
         }
 
-
-
-        private void toggleMode() {
+        private void toggleMode()
+        {
             if (!isEditEnabled)
                 return;
             if (mode == Mode.Default)
@@ -201,7 +190,6 @@ namespace BetterBudget
                     buttonPlusNight.isVisible = true;
                     buttonMinusNight.isVisible = true;
                 }
-
             }
             else if (mode == Mode.PlusMinus)
             {
@@ -214,10 +202,9 @@ namespace BetterBudget
                 icon.isVisible = true;
                 backgroundSprite = "MenuPanel2";
 
-
                 foreach (UIPanel panel in _sliderList)
                 {
-                    panel.width = panel.parent.width-6;
+                    panel.width = panel.parent.width - 6;
 
                     UIComponent sliderDay = panel.Find("DaySlider");
                     UIComponent sliderNight = panel.Find("NightSlider");
@@ -247,8 +234,6 @@ namespace BetterBudget
             }
         }
 
-
-
         public override void Update()
         {
             if (!isVisible)
@@ -259,7 +244,7 @@ namespace BetterBudget
 
             foreach (UIPanel panel in _sliderList)
             {
-                if (panel.containsMouse )
+                if (panel.containsMouse)
                 {
                     mouseIsOnPanelID = c;
                     if (_timer[c] == 0)
@@ -274,7 +259,7 @@ namespace BetterBudget
                 c++;
             }
 
-            for (int i = 0; i < _timer.Count; i++ )
+            for (int i = 0; i < _timer.Count; i++)
             {
                 if (_timer[i] > 0)
                 {
@@ -288,11 +273,8 @@ namespace BetterBudget
                         _timer[i]--;
                     }
                 }
-
             }
         }
-
-
 
         private void onPanelEnter(UIPanel panel)
         {
@@ -337,8 +319,6 @@ namespace BetterBudget
             }
         }
 
-
-
         private void onPanelLeave(UIPanel panel)
         {
             _main.hoverOverPanelEnded();
@@ -350,7 +330,7 @@ namespace BetterBudget
             total.isVisible = true;
             percentageDay.isVisible = false;
             percentageNight.isVisible = false;
-            
+
             if (mode == Mode.Slim)
             {
                 width = 144;
@@ -384,8 +364,6 @@ namespace BetterBudget
             }
         }
 
-
-
         private void clearSliderPanel()
         {
             if (_sliderList.Count == 0)
@@ -401,8 +379,6 @@ namespace BetterBudget
             _sliderList.Clear();
             _timer.Clear();
         }
-
-
 
         public void setSliderPanel(String[] sliderPanels)
         {
@@ -517,7 +493,6 @@ namespace BetterBudget
                 buttonMinusNight.eventClick += adjustBudgetMinusNight;
                 buttonMinusNight.isVisible = false; ;
 
-
                 icon.relativePosition = new Vector3(1, icon.relativePosition.y);
                 icon.isInteractive = true;
                 icon.eventClick += toggleMode;
@@ -528,8 +503,6 @@ namespace BetterBudget
             }
             this.height = budgetItems.Count * heightPerBudget + 46 + additionalPadding;
         }
-
-
 
         /// <summary>
         /// Decreases the percentage value of the budget.
@@ -548,8 +521,6 @@ namespace BetterBudget
             percentage.text = "" + slider.value;
         }
 
-
-
         /// <summary>
         /// Increases the percentage value of the budget.
         /// </summary>
@@ -566,8 +537,6 @@ namespace BetterBudget
             UILabel percentage = panel.Find<UILabel>("DayPercentage");
             percentage.text = "" + slider.value;
         }
-
-
 
         /// <summary>
         /// Decreases the percentage value of the budget.
@@ -586,8 +555,6 @@ namespace BetterBudget
             percentage.text = "" + slider.value;
         }
 
-
-
         /// <summary>
         /// Increases tthe percentage value of the budget.
         /// </summary>
@@ -604,8 +571,6 @@ namespace BetterBudget
             UILabel percentage = panel.Find<UILabel>("NightPercentage");
             percentage.text = "" + slider.value;
         }
-
-
 
         internal BBCustomSaveFile getSettings()
         {

@@ -17,7 +17,6 @@ namespace BetterBudget
         /// </summary>
         /// <param name="mode"></param>
 
-
         public override void OnLevelLoaded(LoadMode mode)
         {
             _mode = mode;
