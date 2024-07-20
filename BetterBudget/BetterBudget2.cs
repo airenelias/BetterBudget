@@ -334,11 +334,11 @@ namespace BetterBudget
             }
 
             // toggle on/off
-            if (Input.GetKeyDown(KeyCode.B) && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)))
+            /*if (Input.GetKeyDown(KeyCode.B) && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)))
             {
                 _expenseUpdateActive = !_expenseUpdateActive;
                 _expenseUpdateTimer = 60;
-            }
+            }*/
             base.Update();
         }
 
